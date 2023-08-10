@@ -20,7 +20,7 @@ NebulousConfigLocation=/opt/neb-server/
 RebootReason="The server will restart at the end of this game's debriefing as part of the nightly scheduled reset"
 
 ### API Query time: How often the script checks the API for changes to player counts. Remember that Steam only allows 100,000 API Queries a day, plan accordingly
-APIQueryTime: 30
+APIQueryTime= 30
 
 ### TODO: Log Truncation (Moves logs to specified directory)
 #Enable Log File Archiving
