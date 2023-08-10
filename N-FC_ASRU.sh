@@ -14,6 +14,11 @@ Server_Command=0
 function QuerySteamAPI {
   apiurl="https://api.steampowered.com/IGameServersService/GetServerList/v1/?key=$APIKey&filter=addr\\${ServerIP}:$SteamPort"
   apiresult=$(curl -X GET --header "Accept: */*" "$apiurl")
+  if [[ "$apiresult" == *"Access is denied"* ]]; then
+    echo "DEBUG: API Key Invalid, Exiting Script."
+    echo "ERROR: API Key is Incorrect, Please Update API Key in config.txt" >> error.txt
+    exit 1
+  fi
   neb_players=$(echo $apiresult | jq -r '.response.servers[0].players')
   echo "DEBUG: There are currently " $neb_players "players on the server"
 }
@@ -65,7 +70,7 @@ do
     echo "DEBUG: Nebulous Fleet Command Dedicated Server is NOT running, starting Service."
     StartNFCServer
     DeleteNFCServerCommand
-    exit
+    exit 0
   fi
 
   #Check Player Count
@@ -79,6 +84,6 @@ do
     echo "DEBUG: Restarting Nebulous Fleet Command Dedicated Server."
     RestartNFCServer
     DeleteNFCServerCommand
-    exit
+    exit 0
   fi
 done

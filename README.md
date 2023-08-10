@@ -1,5 +1,6 @@
 # N-FE-ASRU
 Nebulous: Fleet Command Automatic Server Reboot Utility
+Software licensed under the Apache License 2.0
 
 Prerequisites:
 1. The following Linux packages are required, please install these for the script to work. The following example is for Debian 11 and may change based on your Operating System:

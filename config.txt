@@ -1,3 +1,4 @@
+#!/bin/bash
 ### Configuration file for Switchback's Nebulous Automatic Server Reboot Utility
 ### This File is Licensed under the Apache License 2.0
 
