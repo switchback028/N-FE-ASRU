@@ -1,7 +1,7 @@
 #!/bin/bash
 # N-FC_ASRU.sh
 ### Nebulous: Fleet Command Automatic System Reboot Utility
-# Written By: Andrew W-M (Switchback#6290)
+# Written By: Andrew W-M (Switchback77)
 # Licensed under the Apache License 2.0
 
 #VARIABLES
