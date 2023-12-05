@@ -112,7 +112,8 @@ do
     echo "DEBUG: All players have left the server."
     if [ "$1" = "stop" ]
     then
-      echo "DEBUG: Stop Issued, Exiting Script."
+      echo "DEBUG: Stop Issued, Stopping Server. Exiting Script."
+      StopNFCServer
       exit 0
     elif [ "$1" = "restart" ]
     then
