@@ -1,5 +1,5 @@
 #!/bin/bash
-# N-FC_ASRU.sh
+#Usage: N-FC_ASRU.sh {Script Operation} {Force If necessary}
 ### Nebulous: Fleet Command Automatic System Reboot Utility
 # Written By: Andrew W-M (Switchback77)
 # Licensed under the Apache License 2.0
@@ -59,7 +59,20 @@ function DeleteNFCServerCommand {
 fi
 }
 
-#Main Execution, now with LOOPS!
+#Main Execution
+
+#First validate that Script Modifier is valid option. If valid option is displayed, reboot. 
+#Valid options are: stop, restart
+if [ "$1" = "stop" ]
+then
+    echo "DEBUG: Stop Service confirmed"
+elif [ "$1" = "restart" ]
+    echo "DEBUG: Restart Service confirmed"
+else
+    echo "DEBUG: INCORRECT OPTION CALLED, EXITING."
+    exit 1
+fi
+
 while [ $Script_Execution -lt 1 ]
 do
   #Check if Server is Running
@@ -67,10 +80,17 @@ do
     echo "DEBUG: Nebulous Fleet Command Dedicated Server is Running, Continuing."
     QuerySteamAPI
   else
-    echo "DEBUG: Nebulous Fleet Command Dedicated Server is NOT running, starting Service."
-    StartNFCServer
+    echo "DEBUG: Nebulous Fleet Command Dedicated Server is NOT running."
     DeleteNFCServerCommand
-    exit 0
+    if [ "$1" = "stop" ]
+    then
+      echo "DEBUG: Stop Issued, Exiting Script."
+      exit 0
+    elif [ "$1" = "restart" ]
+      echo "DEBUG: Restarting Nebulous Fleet Command Service."
+      StartNFCServer
+      exit 0
+    fi
   fi
 
   #Check Player Count
