@@ -28,6 +28,11 @@ function StartNFCServer {
   systemctl start $NebServiceName.service
 }
 
+function StopNFCServer {
+  echo "DEBUG: Stopping Nebulous Fleet Command Dedicated Server"
+  systemctl stop $NebServiceName.service
+}
+
 function RestartNFCServer {
   echo "DEBUG: Restarting Nebulous Fleet Command Dedicated Server"
   systemctl restart $NebServiceName.service
@@ -83,6 +88,7 @@ do
   else
     echo "DEBUG: Nebulous Fleet Command Dedicated Server is NOT running."
     DeleteNFCServerCommand
+    #Below Loop runs if the service stops unexpectedly, but the script is scheduled for restart operation.
     if [ "$1" = "stop" ]
     then
       echo "DEBUG: Stop Issued, Exiting Script."
@@ -103,8 +109,17 @@ do
     Server_Command=1
     sleep $APIQueryTime
   else
-    echo "DEBUG: Restarting Nebulous Fleet Command Dedicated Server."
-    RestartNFCServer
+    echo "DEBUG: All players have left the server."
+    if [ "$1" = "stop" ]
+    then
+      echo "DEBUG: Stop Issued, Exiting Script."
+      exit 0
+    elif [ "$1" = "restart" ]
+    then
+      echo "DEBUG: Restarting Nebulous Fleet Command Service."
+      RestartNFCServer
+      exit 0
+    fi
     DeleteNFCServerCommand
     exit 0
   fi
