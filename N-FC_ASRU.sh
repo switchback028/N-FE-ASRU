@@ -67,6 +67,7 @@ if [ "$1" = "stop" ]
 then
     echo "DEBUG: Stop Service confirmed"
 elif [ "$1" = "restart" ]
+then
     echo "DEBUG: Restart Service confirmed"
 else
     echo "DEBUG: INCORRECT OPTION CALLED, EXITING."
@@ -87,6 +88,7 @@ do
       echo "DEBUG: Stop Issued, Exiting Script."
       exit 0
     elif [ "$1" = "restart" ]
+    then
       echo "DEBUG: Restarting Nebulous Fleet Command Service."
       StartNFCServer
       exit 0
