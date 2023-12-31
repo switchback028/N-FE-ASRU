@@ -20,7 +20,12 @@ Installation Steps:
 3. Run the script manually or have it execute automatically as a cronjob.
 
 ## Usage
-./N-FC_ASRU.sh [stop / restart / patch]
+Update the config.txt file with the all variables and paths as needed. 
+
+bash N-FC_ASRU.sh [ stop / restart / patch ]
+- "stop" flag will gracefully stop the Nebulous Server at the end of a game, if onei s in progress.
+- "restart" flag will gracefully restart the Nebulous Server at the end of a game, if one is in progress.
+- "patch" flag will shutdown and patch nebulous. NOTE: This is not a graceful shutdown. Only intended to use the patch flag for new server version patching.
 
 ## Support
 If you need help with this script, please contact Switchback77 on Discord. 
