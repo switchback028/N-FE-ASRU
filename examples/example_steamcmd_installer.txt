@@ -1,0 +1,10 @@
+// Install Nebulous Server and mods
+//
+@ShutdownOnFailedCommand 1
+@NoPromptForPassword 1
+force_install_dir CHANGEME-nebserver_installdir
+login anonymous
+app_update 2353090 validate
+//Add Mods Here
+workshop_download_item 887570 CHANGEME-ModSteamID
+quit

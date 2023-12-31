@@ -38,10 +38,10 @@ function RestartNFCServer {
   systemctl restart $NebServiceName.service
 }
 
-function RestartSystem {
-  echo "DEBUG: Restarting System"
-  init 6
-}
+#function RestartSystem {
+#  echo "DEBUG: Restarting System"
+#  init 6
+#}
 
 function SendNFCServerCommand {
   if [ $Server_Command -lt 1 ]
@@ -64,16 +64,24 @@ function DeleteNFCServerCommand {
 fi
 }
 
+function PatchNebulousServer {
+  echo "DEBUG: Patching Nebulous Server Files"
+  bash $SteamcmdDirectory/steamcmd.sh +runscript $NebServerPatchScript
+}
+
 #Main Execution
 
 #First validate that Script Modifier is valid option. If valid option is displayed, reboot. 
-#Valid options are: stop, restart
+#Valid options are: stop, restart, patch
 if [ "$1" = "stop" ]
 then
     echo "DEBUG: Stop Service confirmed"
 elif [ "$1" = "restart" ]
 then
     echo "DEBUG: Restart Service confirmed"
+elif [ "$1" = "patch" ]
+then
+    echo "DEBUG: Patch Nebulous confirmed"
 else
     echo "DEBUG: INCORRECT OPTION CALLED, EXITING."
     exit 1
@@ -91,11 +99,17 @@ do
     #Below Loop runs if the service stops unexpectedly, but the script is scheduled for restart operation.
     if [ "$1" = "stop" ]
     then
+      if [ "$PatchOnBoot" = "1" ]; then
+        PatchNebulousServer
+      fi
       echo "DEBUG: Stop Issued, Exiting Script."
       exit 0
     elif [ "$1" = "restart" ]
     then
-      echo "DEBUG: Restarting Nebulous Fleet Command Service."
+      if [ "$PatchOnBoot" = "1" ]; then
+        PatchNebulousServer
+      fi
+      echo "DEBUG: Starting Nebulous Fleet Command Service."
       StartNFCServer
       exit 0
     fi
@@ -118,7 +132,11 @@ do
     elif [ "$1" = "restart" ]
     then
       echo "DEBUG: Restarting Nebulous Fleet Command Service."
-      RestartNFCServer
+      StopNFCServer
+      if [ "$PatchOnBoot" = "1" ]; then
+        PatchNebulousServer
+      fi
+      StartNFCServer
       exit 0
     fi
     DeleteNFCServerCommand

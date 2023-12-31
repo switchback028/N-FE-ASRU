@@ -22,3 +22,12 @@ RebootReason="The server will restart at the end of this game's debriefing as pa
 
 ### API Query time: How often the script checks the API for changes to player counts. Remember that Steam only allows 100,000 API Queries a day, plan accordingly
 APIQueryTime=30
+
+### Patch on Reboot enable: If set to 1, this will allow the Automatic Server Reboot Utility to automatically check for patches on start/stop/reboot of the system. This option requires SteamCMD to be installed, and .txt files created. 
+PatchOnBoot=1
+
+### SteamCMD Directory
+SteamcmdDirectory=/opt/steamcmd/
+
+### Nebulous Server Patch Script File
+NebServerPatchScript=/opt/steamcmd/patch.txt
