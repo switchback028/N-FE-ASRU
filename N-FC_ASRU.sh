@@ -87,6 +87,15 @@ else
     exit 1
 fi
 
+if [ "$1" = "patch" ]; then
+  echo "DEBUG: Shutting Down Services for Immediate Patching"
+  StopNFCServer
+  PatchNebulousServer
+  StartNFCServer
+  echo "DEBUG: Patch confirmed, exiting script."
+  exit 0
+fi
+
 while [ $Script_Execution -lt 1 ]
 do
   #Check if Server is Running
