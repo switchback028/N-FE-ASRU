@@ -1,7 +1,7 @@
 #!/bin/bash
-#Usage: N-FC_ASRU.sh {Script Operation} {Force If necessary}
+#Usage: N-FC_ASRU.sh {Script Operation}
 ### Nebulous: Fleet Command Automatic System Reboot Utility
-# Written By: Andrew W-M (Switchback77)
+# Written By: Andrew W-M
 # Licensed under the Apache License 2.0
 
 #VARIABLES
@@ -87,12 +87,13 @@ else
     exit 1
 fi
 
+#If the script is called with "patch" specified, it immediately stops the Neb Server and begins patching. 
 if [ "$1" = "patch" ]; then
   echo "DEBUG: Shutting Down Services for Immediate Patching"
   StopNFCServer
   PatchNebulousServer
   StartNFCServer
-  echo "DEBUG: Patch confirmed, exiting script."
+  echo "DEBUG: Patching complete, exiting script."
   exit 0
 fi
 
