@@ -1,7 +1,7 @@
 #!/bin/bash
-# N-FC_ASRU.sh
+#Usage: N-FC_ASRU.sh {Script Operation}
 ### Nebulous: Fleet Command Automatic System Reboot Utility
-# Written By: Andrew W-M (Switchback77)
+# Written By: Andrew W-M
 # Licensed under the Apache License 2.0
 
 #VARIABLES
@@ -28,15 +28,20 @@ function StartNFCServer {
   systemctl start $NebServiceName.service
 }
 
+function StopNFCServer {
+  echo "DEBUG: Stopping Nebulous Fleet Command Dedicated Server"
+  systemctl stop $NebServiceName.service
+}
+
 function RestartNFCServer {
   echo "DEBUG: Restarting Nebulous Fleet Command Dedicated Server"
   systemctl restart $NebServiceName.service
 }
 
-function RestartSystem {
-  echo "DEBUG: Restarting System"
-  init 6
-}
+#function RestartSystem {
+#  echo "DEBUG: Restarting System"
+#  init 6
+#}
 
 function SendNFCServerCommand {
   if [ $Server_Command -lt 1 ]
@@ -59,7 +64,39 @@ function DeleteNFCServerCommand {
 fi
 }
 
-#Main Execution, now with LOOPS!
+function PatchNebulousServer {
+  echo "DEBUG: Patching Nebulous Server Files"
+  bash $SteamcmdDirectory/steamcmd.sh +runscript $NebServerPatchScript
+}
+
+#Main Execution
+
+#First validate that Script Modifier is valid option. If valid option is displayed, reboot. 
+#Valid options are: stop, restart, patch
+if [ "$1" = "stop" ]
+then
+    echo "DEBUG: Stop Service confirmed"
+elif [ "$1" = "restart" ]
+then
+    echo "DEBUG: Restart Service confirmed"
+elif [ "$1" = "patch" ]
+then
+    echo "DEBUG: Patch Nebulous confirmed"
+else
+    echo "DEBUG: INCORRECT OPTION CALLED, EXITING."
+    exit 1
+fi
+
+#If the script is called with "patch" specified, it immediately stops the Neb Server and begins patching. 
+if [ "$1" = "patch" ]; then
+  echo "DEBUG: Shutting Down Services for Immediate Patching"
+  StopNFCServer
+  PatchNebulousServer
+  StartNFCServer
+  echo "DEBUG: Patching complete, exiting script."
+  exit 0
+fi
+
 while [ $Script_Execution -lt 1 ]
 do
   #Check if Server is Running
@@ -67,10 +104,25 @@ do
     echo "DEBUG: Nebulous Fleet Command Dedicated Server is Running, Continuing."
     QuerySteamAPI
   else
-    echo "DEBUG: Nebulous Fleet Command Dedicated Server is NOT running, starting Service."
-    StartNFCServer
+    echo "DEBUG: Nebulous Fleet Command Dedicated Server is NOT running."
     DeleteNFCServerCommand
-    exit 0
+    #Below Loop runs if the service stops unexpectedly, but the script is scheduled for restart operation.
+    if [ "$1" = "stop" ]
+    then
+      if [ "$PatchOnBoot" = "1" ]; then
+        PatchNebulousServer
+      fi
+      echo "DEBUG: Stop Issued, Exiting Script."
+      exit 0
+    elif [ "$1" = "restart" ]
+    then
+      if [ "$PatchOnBoot" = "1" ]; then
+        PatchNebulousServer
+      fi
+      echo "DEBUG: Starting Nebulous Fleet Command Service."
+      StartNFCServer
+      exit 0
+    fi
   fi
 
   #Check Player Count
@@ -81,8 +133,22 @@ do
     Server_Command=1
     sleep $APIQueryTime
   else
-    echo "DEBUG: Restarting Nebulous Fleet Command Dedicated Server."
-    RestartNFCServer
+    echo "DEBUG: All players have left the server."
+    if [ "$1" = "stop" ]
+    then
+      echo "DEBUG: Stop Issued, Stopping Server. Exiting Script."
+      StopNFCServer
+      exit 0
+    elif [ "$1" = "restart" ]
+    then
+      echo "DEBUG: Restarting Nebulous Fleet Command Service."
+      StopNFCServer
+      if [ "$PatchOnBoot" = "1" ]; then
+        PatchNebulousServer
+      fi
+      StartNFCServer
+      exit 0
+    fi
     DeleteNFCServerCommand
     exit 0
   fi
