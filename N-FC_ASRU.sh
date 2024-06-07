@@ -5,10 +5,17 @@
 # Licensed under the Apache License 2.0
 
 #VARIABLES
-source config.txt
+#Get Script Directory
+cd "$(dirname "$0")"
+SCRIPT_DIR="$(pwd)"
+
+#Import Configuration
+source $SCRIPT_DIR/config.txt
 
 Script_Execution=0
 Server_Command=0
+
+ServerIP=$(curl ipv4.icanhazip.com)
 
 #Functions
 function QuerySteamAPI {
@@ -82,8 +89,11 @@ then
 elif [ "$1" = "patch" ]
 then
     echo "DEBUG: Patch Nebulous confirmed"
+elif [ "$1" = "help" ]
+then
+    echo "DEBUG: Print Help Information"
 else
-    echo "DEBUG: INCORRECT OPTION CALLED, EXITING."
+    echo "DEBUG: Incorrect Option Selected, only the following options are supported: stop | restart | patch | help"
     exit 1
 fi
 
@@ -94,6 +104,17 @@ if [ "$1" = "patch" ]; then
   PatchNebulousServer
   StartNFCServer
   echo "DEBUG: Patching complete, exiting script."
+  exit 0
+fi
+
+#If the script is called with "help" specified, script exits and prints help information.
+if [ "$1" = "help" ]; then
+  echo "Nebulous: Fleet Command Automatic System Reboot Utility"
+  echo "The purpose of this script is to support the running of a Nebulous Fleet Command Dedicated Server"
+  echo "Supported Arguements are listed below:"
+  echo "stop    | Stops Nebulous Fleet Command service at the end of the current game if running."
+  echo "restart | Restarts Nebulous Fleet Command service at the end of the current game, and patches binaries if needed."
+  echo "help    | Displays this help text."
   exit 0
 fi
 

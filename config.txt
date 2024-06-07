@@ -8,9 +8,6 @@ NebServiceName=neb-server
 ### This is the Steampowered Web API Key. Apply for one here: https://steamcommunity.com/dev/apikey
 APIKey=AAAAAAAAAAABBBBBBBBBBCCCCCCCCCCCCC
 
-### This is the Server IP Address for your server AS SEEN BY STEAM. This is an external IP address. (Keep in mind if you have a DHCP assigned IP address you will need to update this every time it changes)
-ServerIP=1.2.3.4
-
 ### This is the SteamQuery port for your Nebulous: Fleet Command server. This is NOT The game port.
 SteamPort=27016
 
