@@ -2,6 +2,9 @@
 ### Configuration file for Switchback's Nebulous Automatic Server Reboot Utility
 ### This File is Licensed under the Apache License 2.0
 
+###############################################################################
+######  ASRU Main Configuration (N-FC_ASRU.sh) ######
+
 ### This is the name of the Nebulous Server service file. (Do not include .service)
 NebServiceName=neb-server
 
@@ -28,3 +31,9 @@ SteamcmdDirectory=/opt/steamcmd/
 
 ### Nebulous Server Patch Script File
 NebServerPatchScript=/opt/steamcmd/patch.txt
+
+###############################################################################
+######  ASRU Patch Monitor Script Configuration (N-FC_patchmon.sh) ######
+
+### Monitor Branch: Which branch of the Nebulous: Fleet Command Server should be monitored. (public, testing)
+MonitorBranch=public
