@@ -22,11 +22,16 @@ Installation Steps:
 ## Usage
 Update the config.txt file with the all variables and paths as needed. 
 
-bash N-FC_ASRU.sh [ stop / restart / patch / help]
-- "stop" flag will gracefully stop the Nebulous Server at the end of a game, if onei s in progress.
+bash N-FC_ASRU.sh [ stop / restart / forcepatch / help] [scheduled / patching / admin]
+- "stop" flag will gracefully stop the Nebulous Server at the end of a game, if one is in progress.
 - "restart" flag will gracefully restart the Nebulous Server at the end of a game, if one is in progress.
-- "patch" flag will shutdown and patch nebulous. NOTE: This is not a graceful shutdown. Only intended to use the patch flag for new server version patching.
+- "forcepatch" flag will immediately shutdown the nebulous server and start the patch process.
 - "help" flag will print information on how to execute the script.
+
+Optionally, you can additionally set what the printed-message will be to users. It will default to a "patching" printout if none is provided.
+- "scheduled" flag will use the RebootReason_Scheduled line listed in config.txt
+- "patching" flag will use the RebootReason_Patching line listed in config.txt
+- "admin" flag will use the RebootReason_Admin line listed in config.txt
 
 ## Support
 If you encounter a script issue please open a PR. 

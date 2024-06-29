@@ -77,7 +77,7 @@ then
         exit 0
     else
         echo "Build ID's DO NOT match, calling ASRU Patch Script to update server baseline"
-        bash $SCRIPT_DIR/N-FC_ASRU.sh restart
+        bash $SCRIPT_DIR/N-FC_ASRU.sh restart patching
         echo $buildid_public > $SCRIPT_DIR/temp/current_build_id.txt
         exit 0
     fi
@@ -91,7 +91,7 @@ then
         exit 0
     else
         echo "Build ID's DO NOT match, calling ASRU Patch Script to update server baseline"
-        bash $SCRIPT_DIR/N-FC_ASRU.sh restart
+        bash $SCRIPT_DIR/N-FC_ASRU.sh restart patching
         echo $buildid_testing > $SCRIPT_DIR/temp/current_build_id.txt
         exit 0
     fi
