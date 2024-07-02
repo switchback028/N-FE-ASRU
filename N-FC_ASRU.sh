@@ -5,10 +5,17 @@
 # Licensed under the Apache License 2.0
 
 #VARIABLES
-source config.txt
+#Get Script Directory
+cd "$(dirname "$0")"
+SCRIPT_DIR="$(pwd)"
+
+#Import Configuration
+source $SCRIPT_DIR/config.txt
 
 Script_Execution=0
 Server_Command=0
+
+ServerIP=$(curl ipv4.icanhazip.com)
 
 #Functions
 function QuerySteamAPI {
@@ -38,22 +45,41 @@ function RestartNFCServer {
   systemctl restart $NebServiceName.service
 }
 
-#function RestartSystem {
-#  echo "DEBUG: Restarting System"
-#  init 6
-#}
-
 function SendNFCServerCommand {
+  #If Server Command has not yet been printed out, generate file.
+  #Dedicated Server will only execute this once, so no point running it on a loop.
   if [ $Server_Command -lt 1 ]
   then
+    #Stage Ingame Message based on Script Input
+    if [ "$2" = "scheduled" ]
+    then
+      echo "DEBUG: Scheduled Reboot Message Queued"
+      $ServerMessage=$RebootReason_Scheduled
+    elif [ "$2" = "patch" ]
+    then
+      echo "DEBUG: Patching Reboot Message Queued"
+      $ServerMessage=$RebootReason_Patching
+    elif [ "$2" = "admin" ]
+    then
+      echo "DEBUG: Admin Reboot Message Queued"
+      $ServerMessage=$RebootReason_Admin
+    elif [ "$1" = "stop" ]
+    then
+      echo "DEBUG: Admin Reboot Message Queued"
+      $ServerMessage=$ShutdownReason
+    else
+      echo "DEBUG: Unsupported Reboot Message Listed, defaulting to Patching Message."
+      $ServerMessage=$RebootReason_Patching
+    fi
+
     echo "DEBUG: Sending N:FC ServerCommand"
-    cat << EOF > ServerCommand.xml
+    cat << EOF > $SCRIPT_DIR/ServerCommand.xml
 <ServerCommandFile>
     <Command>ScheduleRestart</Command>
-    <Message>$RebootReason</Message>
+    <Message>$ServerMessage</Message>
 </ServerCommandFile>
 EOF
-    mv ServerCommand.xml $NebulousConfigLocation/ServerCommand.xml
+    mv $SCRIPT_DIR/ServerCommand.xml $NebulousConfigLocation/ServerCommand.xml
 fi
 }
 
@@ -72,28 +98,43 @@ function PatchNebulousServer {
 #Main Execution
 
 #First validate that Script Modifier is valid option. If valid option is displayed, reboot. 
-#Valid options are: stop, restart, patch
+#Valid options are: stop, restart, forcepatch
 if [ "$1" = "stop" ]
 then
     echo "DEBUG: Stop Service confirmed"
 elif [ "$1" = "restart" ]
 then
     echo "DEBUG: Restart Service confirmed"
-elif [ "$1" = "patch" ]
+elif [ "$1" = "forcepatch" ]
 then
-    echo "DEBUG: Patch Nebulous confirmed"
+    echo "DEBUG: Forcing Patch Nebulous confirmed"
+elif [ "$1" = "help" ]
+then
+    echo "DEBUG: Print Help Information"
 else
-    echo "DEBUG: INCORRECT OPTION CALLED, EXITING."
+    echo "DEBUG: Incorrect Option Selected, only the following options are supported: stop | restart | forcepatch | help"
     exit 1
 fi
 
 #If the script is called with "patch" specified, it immediately stops the Neb Server and begins patching. 
-if [ "$1" = "patch" ]; then
+if [ "$1" = "forcepatch" ]; then
   echo "DEBUG: Shutting Down Services for Immediate Patching"
   StopNFCServer
   PatchNebulousServer
   StartNFCServer
   echo "DEBUG: Patching complete, exiting script."
+  exit 0
+fi
+
+#If the script is called with "help" specified, script exits and prints help information.
+if [ "$1" = "help" ]; then
+  echo "Nebulous: Fleet Command Automatic System Reboot Utility"
+  echo "The purpose of this script is to support the running of a Nebulous Fleet Command Dedicated Server"
+  echo "Supported Arguements are listed below:"
+  echo "stop       | Stops Nebulous Fleet Command service at the end of the current game if running."
+  echo "restart    | Restarts Nebulous Fleet Command service at the end of the current game, and patches binaries if needed."
+  echo "forcepatch | Forces a restart without regard for game status."
+  echo "help       | Displays this help text."
   exit 0
 fi
 
