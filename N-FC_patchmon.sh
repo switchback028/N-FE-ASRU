@@ -29,7 +29,7 @@ function ExtractBuildID_testing
 {
     echo "DEBUG: Extracting Testing Build ID"
     buildid_testing=$(grep -A 3 '"testing"' $SCRIPT_DIR/temp/steamoutput.txt | grep '"buildid"' | awk '{print $2}' | tr -d '"')
-    echo "DEBUG: Testing Build ID is currently: $buildid_public"
+    echo "DEBUG: Testing Build ID is currently: $buildid_testing"
 }
 
 ####### Main Execution
@@ -50,11 +50,11 @@ if [ ! -f "$SCRIPT_DIR/temp/current_build_id.txt" ]; then
         ExtractBuildID_public
         echo $buildid_public > $SCRIPT_DIR/temp/current_build_id.txt
         exit 0
-    elif [ "$MonitorBranch" = 'testing']
+    elif [ "$MonitorBranch" = 'testing' ]
     then
         ExtractBuildID_testing
-        echo $buildid_public > $SCRIPT_DIR/temp/current_build_id.txt
-        echo 0
+        echo $buildid_testing > $SCRIPT_DIR/temp/current_build_id.txt
+        exit 0
     else
         echo "DEBUG: Branch Monitor configuration variable incorrect, only the following branches are currently supported: public | testing"
         exit 1
