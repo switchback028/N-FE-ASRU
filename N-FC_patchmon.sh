@@ -15,7 +15,7 @@ source $SCRIPT_DIR/config.txt
 function PullPatchData
 {
     echo "DEBUG: Pulling Patch Data from Steam"
-    bash $SteamcmdDirectory/steamcmd.sh +app_info_print 2353090 +quit > $SCRIPT_DIR/temp/steamoutput.txt
+    bash $SteamcmdDirectory/steamcmd.sh +login anonymous +app_info_print 2353090 +quit > $SCRIPT_DIR/temp/steamoutput.txt
 }
 
 function ExtractBuildID_public
