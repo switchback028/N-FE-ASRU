@@ -18,11 +18,9 @@ function PullPatchData
     while [ -z "$buildid" ]; do
         echo "DEBUG: Pulling Patch Data from Steam"
         bash $SteamcmdDirectory/steamcmd.sh +login anonymous +app_info_print 2353090 +quit > $SCRIPT_DIR/temp/steamoutput.txt
-    
         echo "DEBUG: Extracting Build ID"
         buildid=$(grep -A 3 $MonitorBranch $SCRIPT_DIR/temp/steamoutput.txt | grep '"buildid"' | awk '{print $2}' | tr -d '"')
     done
-
     echo "DEBUG: $MonitorBranch Build ID is currently: $buildid"
 }
 
